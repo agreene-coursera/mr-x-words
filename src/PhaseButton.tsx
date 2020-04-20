@@ -2,19 +2,14 @@ import React from "react";
 
 import { Fab } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import { Phase } from "./types/Phase";
 
 type Props = {
   dealCards: () => void;
   confirmRoles: () => void;
-  endGame: () => void;
+  guessCorrect: () => void;
   restartGame: () => void;
-  phase:
-    | "init"
-    | "confirmRoles"
-    | "choosingWord"
-    | "showingWord"
-    | "guessing"
-    | "end";
+  phase: Phase;
 };
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -31,7 +26,7 @@ export default function PhaseButton({
   dealCards,
   confirmRoles,
   restartGame,
-  endGame,
+  guessCorrect,
   phase,
 }: Props) {
   const classes = useStyles();
@@ -48,9 +43,10 @@ export default function PhaseButton({
       break;
     case "guessing":
       label = "Correct Guess!";
-      action = endGame;
+      action = guessCorrect;
       break;
-    case "end":
+    case "villagerRedemption":
+    case "werewolfRedemption":
       label = "Restart";
       action = restartGame;
       break;

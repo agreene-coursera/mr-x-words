@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
     guessButton: {
       margin: 0,
       padding: 0,
-    }
+    },
   })
 );
 

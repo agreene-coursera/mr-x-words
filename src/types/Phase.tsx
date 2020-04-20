@@ -4,4 +4,6 @@ export type Phase =
   | "choosingWord"
   | "showingWord"
   | "guessing"
+  | "werewolfRedemption"
+  | "villagerRedemption"
   | "end";

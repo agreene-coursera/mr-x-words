@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingBottom: "12px",
     },
     container: {
-      height: "calc(100vh - 12px)",
+      height: "calc(100vh - 72px)",
     },
   })
 );
@@ -131,10 +131,9 @@ export default function MayorPage() {
       console.log("guessing start");
       setPeerState({ ...peerState, phase: "guessing" });
       phaseTimerRef.current = setTimeout(() => {
-        console.log("game end");
-        setPeerState({ ...peerState, phase: "end" });
+        setPeerState({ ...peerState, phase: "villagerRedemption" });
       }, 1000 * 60 * 6);
-    }, 61000);
+    }, 58000);
   };
 
   const restartGame = () => {
@@ -142,8 +141,8 @@ export default function MayorPage() {
     clearTimeout(phaseTimerRef.current);
   };
 
-  const endGame = () => {
-    setPeerState({ ...peerState, phase: "end" });
+  const guessCorrect = () => {
+    setPeerState({ ...peerState, phase: "werewolfRedemption" });
   };
 
   return (
@@ -183,7 +182,7 @@ export default function MayorPage() {
           confirmRoles={confirmRoles}
           restartGame={restartGame}
           phase={phase}
-          endGame={endGame}
+          guessCorrect={guessCorrect}
         />
         <AudioPlayer phase={phase} timeUsed={timeUsed} />
       </Box>

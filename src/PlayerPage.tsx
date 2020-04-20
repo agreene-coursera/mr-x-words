@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingBottom: "12px",
     },
     container: {
-      height: "calc(100vh - 12px)",
+      height: "calc(100vh - 72px)",
     },
   })
 );

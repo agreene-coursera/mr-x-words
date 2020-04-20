@@ -31,6 +31,28 @@ export default function ({ phase }: Props) {
           }}
         </Timer>
       )}
+      {phase === "werewolfRedemption" && (
+        <Timer initialTime={1000 * 30} direction="backward">
+          {() => {
+            return (
+              <React.Fragment>
+                <Timer.Minutes />:<Timer.Seconds />
+              </React.Fragment>
+            );
+          }}
+        </Timer>
+      )}
+      {phase === "villagerRedemption" && (
+        <Timer initialTime={1000 * 60} direction="backward">
+          {() => {
+            return (
+              <React.Fragment>
+                <Timer.Minutes />:<Timer.Seconds />
+              </React.Fragment>
+            );
+          }}
+        </Timer>
+      )}
     </div>
   );
 }

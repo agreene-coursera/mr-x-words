@@ -35,7 +35,7 @@ function App() {
     <Router>
       <ThemeProvider theme={theme}>
         <div className="App">
-          <AppBar position="fixed" className={classes.appBar}>
+          <AppBar position="sticky" className={classes.appBar}>
             <Toolbar>
               <Typography variant="h6" className={classes.title}>
                 Mr. X Words
@@ -43,15 +43,15 @@ function App() {
             </Toolbar>
           </AppBar>
           <Switch>
-              <Route exact path={["/", "/:roomId"]}>
-                <LobbyPage />
-              </Route>
-              <Route path="/mayor/:roomId/:name">
-                <MayorPage />
-              </Route>
-              <Route path="/player/:roomId/:name">
-                <PlayerPage />
-              </Route>
+            <Route exact path={["/", "/:roomId"]}>
+              <LobbyPage />
+            </Route>
+            <Route path="/mayor/:roomId/:name">
+              <MayorPage />
+            </Route>
+            <Route path="/player/:roomId/:name">
+              <PlayerPage />
+            </Route>
           </Switch>
         </div>
       </ThemeProvider>
