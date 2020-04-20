@@ -1,6 +1,7 @@
 import React from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Timer from "react-compound-timer";
+import { Typography } from "@material-ui/core";
 
 type Props = {
   phase: string;
@@ -11,7 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
     timerContainer: {
       position: "fixed",
       top: 76,
-      left: 12,
+      left: 24,
     },
   })
 );
@@ -21,34 +22,35 @@ export default function ({ phase }: Props) {
   return (
     <div className={classes.timerContainer}>
       {phase === "guessing" && (
-        <Timer initialTime={1000 * 60 * 6} direction="backward">
-          {() => {
+        <Timer key={phase} initialTime={1000 * 60 * 6} direction="backward">
+          {({timerState}: { timerState: any }) => {
+            console.log(Timer.Seconds)
             return (
-              <React.Fragment>
-                <Timer.Minutes />:<Timer.Seconds />
-              </React.Fragment>
+              <Typography variant='h5'>
+                <Timer.Minutes />m <Timer.Seconds />s
+              </Typography>
             );
           }}
         </Timer>
       )}
       {phase === "werewolfRedemption" && (
-        <Timer initialTime={1000 * 30} direction="backward">
+        <Timer key={phase} initialTime={1000 * 30} direction="backward">
           {() => {
             return (
-              <React.Fragment>
-                <Timer.Minutes />:<Timer.Seconds />
-              </React.Fragment>
+              <Typography variant='h5'>
+                <Timer.Minutes />m <Timer.Seconds />s
+              </Typography>
             );
           }}
         </Timer>
       )}
       {phase === "villagerRedemption" && (
-        <Timer initialTime={1000 * 60} direction="backward">
+        <Timer key={phase} initialTime={1000 * 60} direction="backward">
           {() => {
             return (
-              <React.Fragment>
-                <Timer.Minutes />:<Timer.Seconds />
-              </React.Fragment>
+              <Typography variant='h5'>
+                <Timer.Minutes />m <Timer.Seconds />s
+              </Typography>
             );
           }}
         </Timer>

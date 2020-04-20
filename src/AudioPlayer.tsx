@@ -3,13 +3,13 @@ import { Phase } from "./types/Phase";
 
 type Props = {
   phase: Phase;
-  timeUsed: number;
 };
 
 export default function AudioPlayer({ phase }: Props) {
   const openerRef = useRef<HTMLAudioElement>(null);
   const findXRef = useRef<HTMLAudioElement>(null);
   const findInspectorRef = useRef<HTMLAudioElement>(null);
+  const endRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     if (phase === "choosingWord") {
@@ -19,7 +19,19 @@ export default function AudioPlayer({ phase }: Props) {
 
   useEffect(() => {
     if (phase === "villagerRedemption") {
-      openerRef.current?.play();
+      findXRef.current?.play();
+    }
+  }, [phase]);
+
+  useEffect(() => {
+    if (phase === "werewolfRedemption") {
+      findInspectorRef.current?.play();
+    }
+  }, [phase]);
+
+  useEffect(() => {
+    if (phase === "end") {
+      endRef.current?.play();
     }
   }, [phase]);
 
@@ -39,6 +51,11 @@ export default function AudioPlayer({ phase }: Props) {
         ref={findInspectorRef}
         preload="auto"
         src={`${process.env.PUBLIC_URL}/audio/Find the Inspector.m4a`}
+      />
+      <audio
+        ref={endRef}
+        preload="auto"
+        src={`${process.env.PUBLIC_URL}/audio/vote.m4a`}
       />
     </React.Fragment>
   );

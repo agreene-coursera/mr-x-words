@@ -45,13 +45,13 @@ export default function PhaseButton({
       label = "Correct Guess!";
       action = guessCorrect;
       break;
-    case "villagerRedemption":
-    case "werewolfRedemption":
+    case "end":
       label = "Restart";
       action = restartGame;
       break;
   }
-  return (
+
+  return label ? (
     <Fab
       className={classes.fab}
       disabled={!action}
@@ -60,5 +60,5 @@ export default function PhaseButton({
     >
       {label}
     </Fab>
-  );
+  ) : null;
 }

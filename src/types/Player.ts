@@ -5,7 +5,7 @@ export type Player = {
   yes: number;
   no: number;
   maybe: number;
-  role: "Seer" | "Villager" | "Werewolf" | null;
+  role: "Inspector" | "Greene" | "Mr/Mrs X" | null;
 };
 
 export const createPlayer = (name: string) => {

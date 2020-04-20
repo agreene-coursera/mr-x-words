@@ -12,6 +12,7 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 
 import playerToImage from "./utils/playerToImage";
 import { Phase } from "./types/Phase";
+import { PlayerName } from "./types/PlayerName";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,17 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 type Props = {
-  name:
-    | "Austin"
-    | "Sue"
-    | "Claire"
-    | "Alan"
-    | "Rachel"
-    | "Cheryl"
-    | "Beth"
-    | "Kevin"
-    | "Garrett"
-    | "Scott";
+  name: PlayerName
   role?: string;
   owned?: boolean;
   guesses: number;

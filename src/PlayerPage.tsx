@@ -19,7 +19,6 @@ type PeerState = {
   guesses: number;
   phase: Phase;
   word?: string;
-  mayorRole?: "werewolf" | "seer" | "villager";
   mayorName: PlayerName;
 };
 
@@ -59,10 +58,10 @@ export default function PlayerPage() {
         justifyContent="space-between"
         alignItems="center"
       >
-        {phase === "guessing" && <Timer phase={phase} />}
+        <Timer phase={phase} />
         <ConnectionIndicator isConnected={isConnected} />
         <div className="spacer" />
-        {phase !== "showingWord" || myPlayer?.role === "Villager" ? (
+        {phase !== "showingWord" || myPlayer?.role === "Greene" ? (
           <PlayerGrid
             players={Object.values(players ?? {})}
             phase={phase}

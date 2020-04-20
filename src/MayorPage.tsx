@@ -34,17 +34,7 @@ type PeerState = {
   word?: string;
   timeUsed: number;
   mayorRole?: "werewolf" | "seer" | "villager";
-  mayorName:
-    | "Austin"
-    | "Sue"
-    | "Claire"
-    | "Alan"
-    | "Rachel"
-    | "Cheryl"
-    | "Beth"
-    | "Kevin"
-    | "Garrett"
-    | "Scott";
+  mayorName: PlayerName;
 };
 
 type UsePeerState = [PeerState, Function, string, Array<any>, string];
@@ -69,7 +59,6 @@ export default function MayorPage() {
     phase,
     word,
     mayorRole,
-    timeUsed,
   } = peerState as PeerState;
 
   const phaseTimerRef = useRef<any>(null);
@@ -90,9 +79,13 @@ export default function MayorPage() {
   }, [connections]);
 
   const dealCards = () => {
-    let cards = Array(Object.keys(players).length + 1).fill("villager");
-    cards[0] = "werewolf";
-    cards[1] = "seer";
+    let cards = Array(Object.keys(players).length + 1).fill("Greene");
+    cards[0] = "Mr/Mrs X";
+    cards[1] = "Inspector";
+    if (Object.keys(players).length > 6) {
+      cards[2] = "Mr/Mrs X";
+    }
+
     cards = shuffle(cards);
 
     const playersWithCards = Object.entries(players).reduce(
@@ -102,7 +95,6 @@ export default function MayorPage() {
       }),
       {}
     );
-    console.log(playersWithCards);
     setPeerState({
       ...peerState,
       players: playersWithCards,
@@ -121,17 +113,20 @@ export default function MayorPage() {
       ...peerState,
       players: updatedPlayers,
       guesses: newGuesses,
-      phase: newGuesses === 0 ? "end" : phase,
+      phase: newGuesses === 0 ? "villagerRedemption" : phase,
     });
   };
 
   const onChooseWord = (word: string) => {
     setPeerState({ ...peerState, phase: "showingWord", word });
     phaseTimerRef.current = setTimeout(() => {
-      console.log("guessing start");
       setPeerState({ ...peerState, phase: "guessing" });
       phaseTimerRef.current = setTimeout(() => {
         setPeerState({ ...peerState, phase: "villagerRedemption" });
+
+        phaseTimerRef.current = setTimeout(() => {
+          setPeerState({ ...peerState, phase: "end" });
+        }, 1000 * 60);
       }, 1000 * 60 * 6);
     }, 58000);
   };
@@ -143,6 +138,9 @@ export default function MayorPage() {
 
   const guessCorrect = () => {
     setPeerState({ ...peerState, phase: "werewolfRedemption" });
+    phaseTimerRef.current = setTimeout(() => {
+      setPeerState({ ...peerState, phase: "end" });
+    }, 1000 * 30);
   };
 
   return (
@@ -154,7 +152,7 @@ export default function MayorPage() {
         justifyContent="space-between"
         alignItems="center"
       >
-        {phase === "guessing" && <Timer phase={phase} />}
+        <Timer phase={phase} />
         <div className="spacer" />
         {phase !== "choosingWord" && phase !== "showingWord" && (
           <PlayerGrid
@@ -184,7 +182,7 @@ export default function MayorPage() {
           phase={phase}
           guessCorrect={guessCorrect}
         />
-        <AudioPlayer phase={phase} timeUsed={timeUsed} />
+        <AudioPlayer phase={phase} />
       </Box>
     </Container>
   );
