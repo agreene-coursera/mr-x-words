@@ -95,7 +95,7 @@ export default function LobbyPage() {
                   <MenuItem value={"Claire"}>Claire</MenuItem>
                   <MenuItem value={"Garrett"}>Garrett</MenuItem>
                   <MenuItem value={"Kevin"}>Kevin</MenuItem>
-                  <MenuItem value={"Rachel"}>Alan</MenuItem>
+                  <MenuItem value={"Rachel"}>Rachel</MenuItem>
                   <MenuItem value={"Scott"}>Scott</MenuItem>
                   <MenuItem value={"Sue"}>Sue</MenuItem>
                 </Select>
