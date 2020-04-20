@@ -38,7 +38,7 @@ function App() {
           <AppBar position="fixed" className={classes.appBar}>
             <Toolbar>
               <Typography variant="h6" className={classes.title}>
-                Mr.X Words
+                Mr. X Words
               </Typography>
             </Toolbar>
           </AppBar>

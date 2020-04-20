@@ -19,11 +19,10 @@ import { Phase } from "./types/Phase";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      paddingTop: "76px",
       paddingBottom: "12px",
     },
     container: {
-      height: "calc(100vh - 88px)",
+      height: "calc(100vh - 12px)",
     },
   })
 );
@@ -134,12 +133,11 @@ export default function MayorPage() {
       phaseTimerRef.current = setTimeout(() => {
         console.log("game end");
         setPeerState({ ...peerState, phase: "end" });
-      }, 1000 * 60 * 5);
-    }, 5000);
+      }, 1000 * 60 * 6);
+    }, 61000);
   };
 
   const restartGame = () => {
-    console.log("restarting game");
     setPeerState({ ...peerState, phase: "init", word: undefined, guesses: 50 });
     clearTimeout(phaseTimerRef.current);
   };

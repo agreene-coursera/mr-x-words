@@ -12,7 +12,6 @@ const useStyles = makeStyles((theme: Theme) =>
       gridTemplateColumns: "repeat(5, 1fr)",
       gridTemplateRows: "repeat(2, 1fr)",
       gridGap: theme.spacing(2),
-      paddingTop: "76px",
     },
   })
 );

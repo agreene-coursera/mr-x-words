@@ -11,30 +11,21 @@ type Props = {
   timeUsed: number;
 };
 
-export default function AudioPlayer({ phase, timeUsed }: Props) {
+export default function AudioPlayer({ phase }: Props) {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     if (phase === "choosingWord") {
-      {
-        /* audioRef.current?.play(); */
-      }
-    }
-  }, [phase]);
-
-  useEffect(() => {
-    if (timeUsed === 1000 * 60 * 4) {
-      console.log(audioRef);
       audioRef.current?.play();
     }
-  }, [timeUsed]);
+  }, [phase]);
 
   return (
     <React.Fragment>
       <audio
         ref={audioRef}
         preload="auto"
-        src="https://dl.espressif.com/dl/audio/ff-16b-2c-44100hz.m4a"
+        src={`${process.env.PUBLIC_URL}/audio/Opener.m4a`}
       />
     </React.Fragment>
   );

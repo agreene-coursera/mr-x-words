@@ -109,7 +109,7 @@ export default function LobbyPage() {
                     color="primary"
                   />
                 }
-                label={"Kidnapped?"}
+                label={"Mayor"}
               />
             </Box>
             <Fab

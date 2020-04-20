@@ -21,7 +21,7 @@ export default function ({ phase }: Props) {
   return (
     <div className={classes.timerContainer}>
       {phase === "guessing" && (
-        <Timer initialTime={1000 * 60 * 5} direction="backward">
+        <Timer initialTime={1000 * 60 * 6} direction="backward">
           {() => {
             return (
               <React.Fragment>

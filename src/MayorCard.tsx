@@ -98,7 +98,7 @@ export default function MayorCard({
           </Button>
         </CardActions>
       ) : (
-        <Typography variant="h6" component="h2">
+        <Typography gutterBottom variant="h6" component="h2">
           Guesses Remaining: {guesses}
         </Typography>
       )}

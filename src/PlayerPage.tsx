@@ -28,11 +28,10 @@ type UseReceivePeerState = [PeerState | undefined, boolean, any];
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      paddingTop: "76px",
       paddingBottom: "12px",
     },
     container: {
-      height: "calc(100vh - 88px)",
+      height: "calc(100vh - 12px)",
     },
   })
 );

@@ -30,6 +30,10 @@ const useStyles = makeStyles((theme: Theme) =>
       width: theme.spacing(10),
       height: theme.spacing(10),
     },
+    guessButton: {
+      margin: 0,
+      padding: 0,
+    }
   })
 );
 
@@ -66,13 +70,6 @@ export default function PlayerCard({
   return (
     <Card variant={owned ? "outlined" : undefined} className={classes.root}>
       <CardContent>
-        <Typography
-          className={classes.title}
-          color="textSecondary"
-          gutterBottom
-        >
-          Player
-        </Typography>
         <Typography variant="h5" component="h2">
           {player.name}
         </Typography>
@@ -80,7 +77,7 @@ export default function PlayerCard({
           <Avatar className={classes.avatar} src={playerToImage(player.name)} />
         </Box>
       </CardContent>
-      <CardActions>
+      <Box display="flex" alignItems="center">
         {showingRole && player.role ? (
           <Button
             size="small"
@@ -93,6 +90,7 @@ export default function PlayerCard({
         ) : (
           <React.Fragment>
             <Button
+              className={classes.guessButton}
               disabled={!interactive}
               size="small"
               onClick={() => updateGuessState("yes")}
@@ -101,6 +99,7 @@ export default function PlayerCard({
               <CheckCircleIcon /> &nbsp; {player.yes}
             </Button>
             <Button
+              className={classes.guessButton}
               disabled={!interactive}
               size="small"
               onClick={() => updateGuessState("no")}
@@ -109,6 +108,7 @@ export default function PlayerCard({
               <CancelIcon /> &nbsp; {player.no}
             </Button>
             <Button
+              className={classes.guessButton}
               disabled={!interactive}
               size="small"
               onClick={() => updateGuessState("maybe")}
@@ -117,7 +117,7 @@ export default function PlayerCard({
             </Button>
           </React.Fragment>
         )}
-      </CardActions>
+      </Box>
     </Card>
   );
 }
