@@ -43,14 +43,16 @@ function App() {
             </Toolbar>
           </AppBar>
           <Switch>
-            <Route exact path={["/", "/:roomId"]}>
-              <LobbyPage />
-            </Route>
-            <Route path="/mayor/:roomId/:name">
-              <MayorPage />
-            </Route>
-            <Route path="/player/:roomId/:name">
-              <PlayerPage />
+            <Route path="/mr-x-words">
+              <Route exact path={["/", "/:roomId"]}>
+                <LobbyPage />
+              </Route>
+              <Route path="/mayor/:roomId/:name">
+                <MayorPage />
+              </Route>
+              <Route path="/player/:roomId/:name">
+                <PlayerPage />
+              </Route>
             </Route>
           </Switch>
         </div>

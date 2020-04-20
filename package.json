@@ -1,7 +1,8 @@
 {
   "name": "mr-x-words",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
+  "homepage": "mr-x-words.now.sh",
   "dependencies": {
     "@material-ui/core": "^4.9.10",
     "@material-ui/icons": "^4.9.1",
@@ -25,6 +26,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
     "react-use": "^14.1.1",
+    "surge": "^0.21.3",
     "typescript": "^3.8.3",
     "xstate": "^4.9.0"
   },
@@ -33,6 +35,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "predeploy": "yarn build",
     "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
