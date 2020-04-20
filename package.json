@@ -2,7 +2,6 @@
   "name": "mr-x-words",
   "version": "0.1.0",
   "private": false,
-  "homepage": "mr-x-words.now.sh",
   "dependencies": {
     "@material-ui/core": "^4.9.10",
     "@material-ui/icons": "^4.9.1",
@@ -36,7 +35,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "yarn build",
-    "deploy": "gh-pages -d build"
+    "deploy": "now --prod"
   },
   "eslintConfig": {
     "extends": "react-app"

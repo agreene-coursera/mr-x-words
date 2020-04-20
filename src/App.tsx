@@ -43,7 +43,6 @@ function App() {
             </Toolbar>
           </AppBar>
           <Switch>
-            <Route path="/mr-x-words">
               <Route exact path={["/", "/:roomId"]}>
                 <LobbyPage />
               </Route>
@@ -53,7 +52,6 @@ function App() {
               <Route path="/player/:roomId/:name">
                 <PlayerPage />
               </Route>
-            </Route>
           </Switch>
         </div>
       </ThemeProvider>
