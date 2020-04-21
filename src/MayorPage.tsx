@@ -42,7 +42,7 @@ type UsePeerState = [PeerState, Function, string, Array<any>, string];
 export default function MayorPage() {
   const classes = useStyles();
   const { roomId, name } = useParams();
-  const [peerState, setPeerState, , connections]: UsePeerState = usePeerState(
+  const [peerState, setPeerState, brokerId, connections]: UsePeerState = usePeerState(
     {
       players: {},
       guesses: 50,
@@ -50,8 +50,10 @@ export default function MayorPage() {
       mayorName: name as PlayerName,
       timeUsed: 0,
     },
-    { brokerId: `MR_X_WORDS${roomId}` }
+    { brokerId: `MRXWORDS_${roomId}` }
   );
+
+  console.log(brokerId)
 
   const {
     players,
@@ -64,9 +66,11 @@ export default function MayorPage() {
   const phaseTimerRef = useRef<any>(null);
 
   useEffect(() => {
+    debugger;
     const playerIds = connections?.map(
-      (connection) => connection.peer.split("MR_X_WORDS")[1]
+      (connection) => connection.peer.split("_")[2]
     );
+    console.log(playerIds);
     const newPlayers = playerIds.reduce(
       (acc, id) => ({
         ...acc,

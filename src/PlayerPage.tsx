@@ -39,11 +39,14 @@ export default function PlayerPage() {
   const classes = useStyles();
   const { roomId, name } = useParams();
   const [peerState, isConnected]: UseReceivePeerState = useReceivePeerState(
-    `MR_X_WORDS${roomId}`,
+    `MRXWORDS_${roomId}`,
     {
-      brokerId: `MR_X_WORDS${name}`,
+      brokerId: `MRXWORDS_${roomId}_${name}`,
     }
   );
+
+  console.log(`MRXWORDS_${roomId}`)
+
 
   const { mayorName, players, guesses, phase, word } =
     (peerState as PeerState) ?? {};
