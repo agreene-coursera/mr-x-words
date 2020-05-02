@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
+import { useMachine } from "@xstate/react";
+import hostMachine from "./machines/hostMachine";
+import { createHost } from "./utils/peerConnections";
 import { Box, Container } from "@material-ui/core";
-import { usePeerState } from "react-peer";
-import { createPlayer, Player } from "./types/Player";
 import Timer from "./Timer";
 import ChooseWord from "./ChooseWord";
 import PlayerGrid from "./PlayerGrid";
@@ -11,9 +12,6 @@ import PhaseButton from "./PhaseButton";
 import AudioPlayer from "./AudioPlayer";
 import { useParams } from "react-router-dom";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-
-import shuffle from "lodash/shuffle";
-import { PlayerName } from "./types/PlayerName";
 import { Phase } from "./types/Phase";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -27,124 +25,59 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-type PeerState = {
-  players: { [id: string]: Player };
-  guesses: number;
-  phase: Phase;
-  word?: string;
-  timeUsed: number;
-  mayorRole?: "werewolf" | "seer" | "villager";
-  mayorName: PlayerName;
-};
-
-type UsePeerState = [PeerState, Function, string, Array<any>, string];
-
 export default function MayorPage() {
   const classes = useStyles();
   const { roomId, name } = useParams();
-  const [peerState, setPeerState, brokerId, connections]: UsePeerState = usePeerState(
-    {
-      players: {},
-      guesses: 50,
-      phase: "init",
-      mayorName: name as PlayerName,
-      timeUsed: 0,
-    },
-    { brokerId: `MRXWORDS_${roomId}` }
-  );
-
-  console.log(brokerId)
-
-  const {
-    players,
-    guesses,
-    phase,
-    word,
-    mayorRole,
-  } = peerState as PeerState;
-
-  const phaseTimerRef = useRef<any>(null);
+  const [state, send] = useMachine(hostMachine);
 
   useEffect(() => {
-    debugger;
-    const playerIds = connections?.map(
-      (connection) => connection.peer.split("_")[2]
-    );
-    console.log(playerIds);
-    const newPlayers = playerIds.reduce(
-      (acc, id) => ({
-        ...acc,
-        [id]: players[id] ?? createPlayer(id),
-      }),
-      {}
-    );
-    setPeerState({ ...peerState, players: newPlayers });
-    // eslint-disable-next-line
-  }, [connections]);
+    const host = createHost(roomId);
+    send("CREATE_HOST", { name });
+    host.on("connection", (dataConnection) => {
+      dataConnection.on("open", () => {
+        send("CONNECTION", { dataConnection });
+        dataConnection.on("data", (data) => {
+          console.log("PEER DATA", data);
+          send(data.event, { ...data.payload, id: dataConnection.peer });
+        });
+        dataConnection.on("close", () => {
+          send("CONNECTION_CLOSED", { id: dataConnection.peer });
+        });
+      });
+    });
+
+    return () => host.disconnect();
+  }, [roomId, name, send]);
+
+  const phase = state.value as Phase;
+  const { mayor, players, word, guesses, votes, voting, audio } = state.context;
+
+  const confirmRole = () => {
+    send("PLAYER_CONFIRM", { id: "mayor" });
+  };
 
   const dealCards = () => {
-    let cards = Array(Object.keys(players).length + 1).fill("Greene");
-    cards[0] = "Mr/Mrs X";
-    cards[1] = "Inspector";
-    if (Object.keys(players).length > 6) {
-      cards[2] = "Mr/Mrs X";
-    }
-
-    cards = shuffle(cards);
-
-    const playersWithCards = Object.entries(players).reduce(
-      (acc, [key, player]) => ({
-        ...acc,
-        [key]: { ...player, role: cards.pop() },
-      }),
-      {}
-    );
-    setPeerState({
-      ...peerState,
-      players: playersWithCards,
-      phase: "confirmRoles",
-      mayorRole: cards.pop(),
-    });
+    send("DEAL_CARDS");
   };
 
-  const confirmRoles = () =>
-    setPeerState({ ...peerState, phase: "choosingWord" });
-
-  const answerGuess = (player: Player) => {
-    const updatedPlayers = { ...players, [player.name]: player };
-    const newGuesses = guesses - 1;
-    setPeerState({
-      ...peerState,
-      players: updatedPlayers,
-      guesses: newGuesses,
-      phase: newGuesses === 0 ? "villagerRedemption" : phase,
-    });
+  const chooseWord = (word: string) => {
+    send("WORD_CHOICE", { word });
   };
 
-  const onChooseWord = (word: string) => {
-    setPeerState({ ...peerState, phase: "showingWord", word });
-    phaseTimerRef.current = setTimeout(() => {
-      setPeerState({ ...peerState, phase: "guessing" });
-      phaseTimerRef.current = setTimeout(() => {
-        setPeerState({ ...peerState, phase: "villagerRedemption" });
-
-        phaseTimerRef.current = setTimeout(() => {
-          setPeerState({ ...peerState, phase: "end" });
-        }, 1000 * 60);
-      }, 1000 * 60 * 6);
-    }, 58000);
-  };
-
-  const restartGame = () => {
-    setPeerState({ ...peerState, phase: "init", word: undefined, guesses: 50 });
-    clearTimeout(phaseTimerRef.current);
+  const answerGuess = (playerId: string, answer: "yes" | "no" | "maybe") => {
+    send("GUESS", { id: playerId, answer });
   };
 
   const guessCorrect = () => {
-    setPeerState({ ...peerState, phase: "werewolfRedemption" });
-    phaseTimerRef.current = setTimeout(() => {
-      setPeerState({ ...peerState, phase: "end" });
-    }, 1000 * 30);
+    send("CORRECT_GUESS");
+  };
+
+  const restartGame = () => {
+    send("RESET_GAME");
+  };
+
+  const voteForPlayer = (playerId: string) => {
+    send("VOTE", { id: "mayor", vote: playerId });
   };
 
   return (
@@ -158,35 +91,42 @@ export default function MayorPage() {
       >
         <Timer phase={phase} />
         <div className="spacer" />
-        {phase !== "choosingWord" && phase !== "showingWord" && (
+        {phase !== "choosingWord" && (
           <PlayerGrid
             players={Object.values(players ?? {})}
             interactive={phase === "guessing"}
             answerGuess={answerGuess}
+            votes={votes}
             phase={phase}
+            voting={voting}
+            voteForPlayer={voteForPlayer}
           />
         )}
-        {phase === "choosingWord" && <ChooseWord onChooseWord={onChooseWord} />}
-        {phase === "showingWord" && (
+        {phase === "choosingWord" && !word && (
+          <ChooseWord chooseWord={chooseWord} />
+        )}
+        {phase === "choosingWord" && word && (
           <Box display="flex" justifyContent="center">
             <WordCard word={word ?? ""} />
           </Box>
         )}
         <MayorCard
-          name={(name as PlayerName) ?? ""}
-          role={mayorRole}
+          mayor={mayor}
           guesses={guesses}
           phase={phase}
+          votes={votes}
+          voting={voting}
+          voteForPlayer={voteForPlayer}
+          confirmRole={confirmRole}
           owned
         />
         <PhaseButton
           dealCards={dealCards}
-          confirmRoles={confirmRoles}
           restartGame={restartGame}
           phase={phase}
           guessCorrect={guessCorrect}
         />
-        <AudioPlayer phase={phase} />
+        <AudioPlayer phase={phase} audioCue={audio} />
       </Box>
     </Container>
   );

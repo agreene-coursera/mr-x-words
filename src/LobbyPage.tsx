@@ -54,7 +54,7 @@ export default function LobbyPage() {
 
   const handleGoToRoom = () => {
     history.push(
-      `/${isMayor ? "mayor" : "player"}/${kebabCase(roomName)}/${player}`
+      `${kebabCase(roomName)}/${isMayor ? "mayor" : "player"}/${player}`
     );
   };
   return (

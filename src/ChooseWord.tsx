@@ -5,10 +5,10 @@ import wordList from "./utils/words";
 import WordCard from "./WordCard";
 
 type Props = {
-  onChooseWord: (word: string) => void;
+  chooseWord: (word: string) => void;
 };
 
-export default function PlayerCard({ onChooseWord }: Props) {
+export default function PlayerCard({ chooseWord }: Props) {
   const [words] = useState(sampleSize(wordList, 3));
 
   return (
@@ -17,7 +17,7 @@ export default function PlayerCard({ onChooseWord }: Props) {
         <WordCard
           word={word}
           interactive={true}
-          onChooseWord={onChooseWord}
+          onChooseWord={chooseWord}
           key={word}
         />
       ))}
