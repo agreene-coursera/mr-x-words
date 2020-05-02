@@ -23,10 +23,9 @@ export default function ({ phase }: Props) {
     <div className={classes.timerContainer}>
       {phase === "guessing" && (
         <Timer key={phase} initialTime={1000 * 60 * 6} direction="backward">
-          {({timerState}: { timerState: any }) => {
-            console.log(Timer.Seconds)
+          {({ timerState }: { timerState: any }) => {
             return (
-              <Typography variant='h5'>
+              <Typography variant="h5">
                 <Timer.Minutes />m <Timer.Seconds />s
               </Typography>
             );
@@ -37,7 +36,7 @@ export default function ({ phase }: Props) {
         <Timer key={phase} initialTime={1000 * 30} direction="backward">
           {() => {
             return (
-              <Typography variant='h5'>
+              <Typography variant="h5">
                 <Timer.Minutes />m <Timer.Seconds />s
               </Typography>
             );
@@ -48,7 +47,7 @@ export default function ({ phase }: Props) {
         <Timer key={phase} initialTime={1000 * 60} direction="backward">
           {() => {
             return (
-              <Typography variant='h5'>
+              <Typography variant="h5">
                 <Timer.Minutes />m <Timer.Seconds />s
               </Typography>
             );

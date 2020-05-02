@@ -2,7 +2,7 @@ import { PlayerName } from "../types/PlayerName";
 
 const playerToImage = {
   Austin:
-    "https://scontent-sjc3-1.xx.fbcdn.net/v/t1.15752-9/93824152_229577345058259_8872321059555115008_n.jpg?_nc_cat=109&_nc_sid=b96e70&_nc_ohc=d7rw-APi5XoAX-JXi4x&_nc_ht=scontent-sjc3-1.xx&oh=3da64b357d5d4a416ca27ce51c7bd300&oe=5EC209CA&dl=1",
+    "https://scontent-sjc3-1.xx.fbcdn.net/v/t1.15752-9/94238554_639750663272940_8873059334368526336_n.jpg?_nc_cat=101&_nc_sid=b96e70&_nc_ohc=arj-dJq45mMAX98Uwwd&_nc_ht=scontent-sjc3-1.xx&oh=d84a3c7dee9a1f9c335368186c7e3f19&oe=5ED1D167",
   Sue:
     "https://scontent-sjc3-1.xx.fbcdn.net/v/t1.15752-9/93412113_684132849055526_8448952479487361024_n.jpg?_nc_cat=104&_nc_sid=b96e70&_nc_ohc=gh0csIXvYjgAX-4VEyi&_nc_ht=scontent-sjc3-1.xx&oh=28db33f743f756f67ec0b8262296ed87&oe=5EC37292&dl=1",
   Claire:
@@ -23,4 +23,5 @@ const playerToImage = {
     "https://scontent-sjc3-1.xx.fbcdn.net/v/t1.15752-9/93962843_261307035269812_3761977866204479488_n.jpg?_nc_cat=104&_nc_sid=b96e70&_nc_ohc=GUKBZc0qSXYAX9Dmmj_&_nc_ht=scontent-sjc3-1.xx&oh=72a80ee0f376a1ae55437b73deff15ba&oe=5EC431E5&dl=1",
 };
 
-export default (name: PlayerName): string | undefined => playerToImage[name];
+export default (name: PlayerName | undefined): string | undefined =>
+  name && playerToImage[name];

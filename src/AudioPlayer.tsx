@@ -3,37 +3,49 @@ import { Phase } from "./types/Phase";
 
 type Props = {
   phase: Phase;
+  audioCue?: string;
 };
 
-export default function AudioPlayer({ phase }: Props) {
+export default function AudioPlayer({ phase, audioCue }: Props) {
   const openerRef = useRef<HTMLAudioElement>(null);
+  const oneMinuteRef = useRef<HTMLAudioElement>(null);
+  const thirtySecondsRef = useRef<HTMLAudioElement>(null);
   const findXRef = useRef<HTMLAudioElement>(null);
   const findInspectorRef = useRef<HTMLAudioElement>(null);
+  const villagersVoteRef = useRef<HTMLAudioElement>(null);
+  const werewolvesVoteRef = useRef<HTMLAudioElement>(null);
   const endRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
-    if (phase === "choosingWord") {
-      openerRef.current?.play();
+    switch (phase) {
+      case "choosingWord":
+        openerRef.current?.play();
+        break;
+      case "villagerRedemption":
+        findXRef.current?.play();
+        break;
+      case "werewolfRedemption":
+        findInspectorRef.current?.play();
+        break;
     }
   }, [phase]);
 
   useEffect(() => {
-    if (phase === "villagerRedemption") {
-      findXRef.current?.play();
+    switch (audioCue) {
+      case "oneMinute":
+        oneMinuteRef.current?.play();
+        break;
+      case "thirtySeconds":
+        thirtySecondsRef.current?.play();
+        break;
+      case "werewolvesVote":
+        werewolvesVoteRef.current?.play();
+        break;
+      case "villagersVote":
+        villagersVoteRef.current?.play();
+        break;
     }
-  }, [phase]);
-
-  useEffect(() => {
-    if (phase === "werewolfRedemption") {
-      findInspectorRef.current?.play();
-    }
-  }, [phase]);
-
-  useEffect(() => {
-    if (phase === "end") {
-      endRef.current?.play();
-    }
-  }, [phase]);
+  }, [audioCue]);
 
   return (
     <React.Fragment>
@@ -41,6 +53,16 @@ export default function AudioPlayer({ phase }: Props) {
         ref={openerRef}
         preload="auto"
         src={`${process.env.PUBLIC_URL}/audio/Opener.m4a`}
+      />
+      <audio
+        ref={oneMinuteRef}
+        preload="auto"
+        src={`${process.env.PUBLIC_URL}/audio/oneMinute.m4a`}
+      />
+      <audio
+        ref={thirtySecondsRef}
+        preload="auto"
+        src={`${process.env.PUBLIC_URL}/audio/thirtySeconds.m4a`}
       />
       <audio
         ref={findXRef}
@@ -53,7 +75,12 @@ export default function AudioPlayer({ phase }: Props) {
         src={`${process.env.PUBLIC_URL}/audio/Find the Inspector.m4a`}
       />
       <audio
-        ref={endRef}
+        ref={werewolvesVoteRef}
+        preload="auto"
+        src={`${process.env.PUBLIC_URL}/audio/werewolvesVote.m4a`}
+      />
+      <audio
+        ref={villagersVoteRef}
         preload="auto"
         src={`${process.env.PUBLIC_URL}/audio/vote.m4a`}
       />

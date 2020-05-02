@@ -1,5 +1,7 @@
-import React from "react";
-import { useReceivePeerState } from "react-peer";
+import React, { useEffect } from "react";
+import { useMachine } from "@xstate/react";
+import peerMachine from "./machines/peerMachine";
+import { connectToHost } from "./utils/peerConnections";
 import { Container, Box } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { useParams } from "react-router-dom";
@@ -10,19 +12,8 @@ import MayorCard from "./MayorCard";
 import PlayerGrid from "./PlayerGrid";
 import WordCard from "./WordCard";
 
-import { Player } from "./types/Player";
-import { PlayerName } from "./types/PlayerName";
 import { Phase } from "./types/Phase";
-
-type PeerState = {
-  players: { [id: string]: Player };
-  guesses: number;
-  phase: Phase;
-  word?: string;
-  mayorName: PlayerName;
-};
-
-type UseReceivePeerState = [PeerState | undefined, boolean, any];
+import { DataConnection } from "peerjs";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,19 +29,37 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function PlayerPage() {
   const classes = useStyles();
   const { roomId, name } = useParams();
-  const [peerState, isConnected]: UseReceivePeerState = useReceivePeerState(
-    `MRXWORDS_${roomId}`,
-    {
-      brokerId: `MRXWORDS_${roomId}_${name}`,
-    }
-  );
+  const [state, send] = useMachine(peerMachine);
 
-  console.log(`MRXWORDS_${roomId}`)
+  useEffect(() => {
+    let connection: DataConnection;
+    connectToHost(roomId, { name: name as string }).then(
+      ([dataConnection, peer]) => {
+        connection = dataConnection;
+        send("CONNECTED", { dataConnection, peer });
+        dataConnection.on("data", (data) => {
+          console.log("PEER DATA", data);
+          send(data.event, data.payload);
+        });
+      }
+    );
 
+    return () => connection.close();
+  }, [roomId, name, send]);
 
-  const { mayorName, players, guesses, phase, word } =
-    (peerState as PeerState) ?? {};
-  const myPlayer = name ? (peerState as PeerState)?.players[name] : undefined;
+  const phase = state.value as Phase;
+  const { players, mayor, word, peer, guesses, voting, votes } = state.context;
+
+  const myPlayer = peer && players[peer.id];
+
+  const confirmRole = () => send("PLAYER_CONFIRM");
+  const showWord =
+    (phase === "showingSeer" && myPlayer?.role === "Inspector") ||
+    (phase === "showingWerewolf" && myPlayer?.role === "Mr/Mrs X");
+
+  const voteForPlayer = (playerId: string) => {
+    send("SEND_VOTE", { vote: playerId });
+  };
 
   return (
     <Container className={classes.root}>
@@ -62,14 +71,18 @@ export default function PlayerPage() {
         alignItems="center"
       >
         <Timer phase={phase} />
-        <ConnectionIndicator isConnected={isConnected} />
+        <ConnectionIndicator isConnected={!!myPlayer} />
         <div className="spacer" />
-        {phase !== "showingWord" || myPlayer?.role === "Greene" ? (
+        {!showWord ? (
           <PlayerGrid
             players={Object.values(players ?? {})}
+            confirmRole={confirmRole}
             phase={phase}
             interactive={false}
             ownedPlayer={myPlayer}
+            voteForPlayer={voteForPlayer}
+            votes={votes}
+            voting={voting}
           />
         ) : (
           <Box display="flex" justifyContent="center">
@@ -77,10 +90,12 @@ export default function PlayerPage() {
           </Box>
         )}
         <MayorCard
-          name={mayorName ?? ""}
-          guesses={guesses}
+          mayor={mayor}
           phase={phase}
-          owned
+          guesses={guesses}
+          owned={false}
+          voting={voting}
+          voteForPlayer={voteForPlayer}
         />
       </Box>
     </Container>

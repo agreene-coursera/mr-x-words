@@ -46,10 +46,10 @@ function App() {
             <Route exact path={["/", "/:roomId"]}>
               <LobbyPage />
             </Route>
-            <Route path="/mayor/:roomId/:name">
+            <Route exact path="/:roomId/mayor/:name">
               <MayorPage />
             </Route>
-            <Route path="/player/:roomId/:name">
+            <Route exact path="/:roomId/player/:name">
               <PlayerPage />
             </Route>
           </Switch>

@@ -1,9 +1,10 @@
 export type Phase =
-  | "init"
-  | "confirmRoles"
+  | "connecting"
+  | "confirmingRoles"
   | "choosingWord"
-  | "showingWord"
+  | "showingSeer"
+  | "showingWerewolf"
   | "guessing"
   | "werewolfRedemption"
   | "villagerRedemption"
-  | "end";
+  | "endGame";

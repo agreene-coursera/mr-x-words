@@ -13,6 +13,7 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import playerToImage from "./utils/playerToImage";
 import { Phase } from "./types/Phase";
 import { PlayerName } from "./types/PlayerName";
+import { PlayerRole } from "./types/PlayerRole";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,33 +36,82 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 type Props = {
-  name: PlayerName
-  role?: string;
+  mayor: { name: PlayerName; role?: PlayerRole } | undefined;
   owned?: boolean;
   guesses: number;
+  voting: boolean;
+  voteForPlayer: (playerId: string) => void;
+  confirmRole?: () => void;
+  votes?: { [playerId: string]: string };
   phase: Phase;
 };
 
 export default function MayorCard({
-  name,
+  mayor,
   owned,
-  role,
   guesses,
   phase,
+  voting,
+  voteForPlayer,
+  confirmRole,
+  votes,
 }: Props) {
   const classes = useStyles();
   const [showingRole, setShowingRole] = useState(owned);
 
-  const confirmRole = () => setShowingRole(false);
+  const onConfirmRole = () => {
+    confirmRole?.();
+    setShowingRole(false);
+  };
 
   useEffect(() => {
-    if (phase === "confirmRoles" && owned) {
+    if (phase === "confirmingRoles" && owned) {
       setShowingRole(true);
     }
   }, [owned, phase]);
 
+  const votesForPlayer =
+    votes && Object.values(votes).filter((vote) => vote === "mayor").length;
+
+  let actions;
+  if (showingRole && mayor && mayor.role) {
+    actions = (
+      <CardActions>
+        <Button
+          size="small"
+          onClick={onConfirmRole}
+          color="primary"
+          className={classes.confirmButton}
+        >
+          <CheckCircleIcon /> &nbsp; {mayor.role}
+        </Button>
+      </CardActions>
+    );
+  } else if (voting) {
+    actions = (
+      <CardActions>
+        <Button
+          size="small"
+          onClick={() => voteForPlayer("mayor")}
+          color="primary"
+          className={classes.confirmButton}
+        >
+          Vote
+        </Button>
+      </CardActions>
+    );
+  } else if (phase === "endGame") {
+    actions = <Typography variant="h6">{votesForPlayer}</Typography>;
+  } else {
+    actions = (
+      <Typography gutterBottom variant="h6" component="h2">
+        Guesses Remaining: {guesses}
+      </Typography>
+    );
+  }
+
   return (
-    <Card variant={owned ? "outlined" : undefined} className={classes.root}>
+    <Card className={classes.root}>
       <CardContent>
         <Typography
           className={classes.title}
@@ -71,28 +121,13 @@ export default function MayorCard({
           Mayor
         </Typography>
         <Typography variant="h5" component="h2">
-          {name}
+          {mayor?.name ?? "Loading..."}
         </Typography>
         <Box display="flex" justifyContent="center">
-          <Avatar className={classes.avatar} src={playerToImage(name)} />
+          <Avatar className={classes.avatar} src={playerToImage(mayor?.name)} />
         </Box>
       </CardContent>
-      {showingRole && role ? (
-        <CardActions>
-          <Button
-            size="small"
-            onClick={confirmRole}
-            color="primary"
-            className={classes.confirmButton}
-          >
-            <CheckCircleIcon /> &nbsp; {role}
-          </Button>
-        </CardActions>
-      ) : (
-        <Typography gutterBottom variant="h6" component="h2">
-          Guesses Remaining: {guesses}
-        </Typography>
-      )}
+      {actions}
     </Card>
   );
 }

@@ -6,7 +6,6 @@ import { Phase } from "./types/Phase";
 
 type Props = {
   dealCards: () => void;
-  confirmRoles: () => void;
   guessCorrect: () => void;
   restartGame: () => void;
   phase: Phase;
@@ -24,7 +23,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function PhaseButton({
   dealCards,
-  confirmRoles,
   restartGame,
   guessCorrect,
   phase,
@@ -33,19 +31,15 @@ export default function PhaseButton({
   let action: (() => void) | null | undefined = null;
   let label;
   switch (phase) {
-    case "init":
+    case "connecting":
       label = "Deal Cards";
       action = dealCards;
-      break;
-    case "confirmRoles":
-      label = "Start Game";
-      action = confirmRoles;
       break;
     case "guessing":
       label = "Correct Guess!";
       action = guessCorrect;
       break;
-    case "end":
+    case "endGame":
       label = "Restart";
       action = restartGame;
       break;
