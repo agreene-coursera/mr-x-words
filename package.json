@@ -15,7 +15,7 @@
     "@types/react-dom": "^16.9.6",
     "@types/react-router-dom": "^5.1.4",
     "@xstate/react": "^0.8.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "peerjs": "^1.2.0",
     "prettier": "^2.0.4",
     "prettier-eslint": "^9.0.1",
